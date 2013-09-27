@@ -26,6 +26,7 @@
 #include "../main_controller.h"
 #include "../my_action.h"
 #include "skinfcitx.h"
+#include "skinsogou.h"
 #include "../main.h"
 
 SkinMenu::SkinMenu(const QString &title, QWidget *parent)
@@ -134,7 +135,9 @@ void SkinMenu::menuItemOnClick(QAction *action)
     MyAction *myAction = (MyAction *)action;
     MainController::self()->setSkinType(myAction->text());
 
-    skin = new SkinFcitx;
+//fjkong
+//    skin = new SkinFcitx;
+    skin = new SkinSogou;
     skin->loadSkin(myAction->getSkinPath());
     MainController::self()->setSkinBase(skin);
 }
