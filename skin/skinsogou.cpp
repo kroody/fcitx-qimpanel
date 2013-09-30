@@ -29,13 +29,18 @@ QColor SkinSogou::uint2color(const unsigned int value)
 bool SkinSogou::loadSkin(const QString skinPath)
 {
     init();
+//QString tmpPath = "/usr/share/fcitx/skin/sogou-kid/";
+QString tmpPath = "/usr/share/fcitx/skin/fish/";
+    //QFile sogouSkinConfFile(skinPath + "skin.ini");
+    QFile sogouSkinConfFile(tmpPath + "skin.ini");
+qDebug() << "skinPath  " << skinPath;
 
-    QFile sogouSkinConfFile(skinPath + "sogou_skin.conf");
     if (!sogouSkinConfFile.exists())
         return false;
 
     if (!sogouSkinConfFile.open(QIODevice::ReadOnly))
         return false;
+
 
     QString line;
     QString key, value;
@@ -51,7 +56,7 @@ bool SkinSogou::loadSkin(const QString skinPath)
     int fontPixelSize = 12;
 
     QTextStream textStream(sogouSkinConfFile.readAll());
-
+ 
     do {
 
         line = textStream.readLine();
@@ -78,46 +83,49 @@ bool SkinSogou::loadSkin(const QString skinPath)
         if (value.isEmpty())
             continue;
 
+
         if (display) {
             if (key == "font_size")
                 setFontSize(value.toInt());
             else if (key == "pinyin_color"){
                 pinyin_color = uint2color(value.toUInt());
-//                setInputColor(pinyin_color);
+                setInputColor(pinyin_color);
             } 
             else if (key == "zhongwen_color"){
                 zhongwen_color = uint2color(value.toUInt());
-//                setOtherColor(zhongwen_color);
+                setOtherColor(zhongwen_color);
             }
             else if (key == "zhongwen_first_color"){
                 zhongwen_first_color = uint2color(value.toUInt());
-//                setFirstCandColor(zhongwen_first_color);
+                setFirstCandColor(zhongwen_first_color);
             }
        }else if (scheme_h1) {
             if (key == "pic") {
-//                setInputBackImg("file:/" + skinPath + value);
+                setInputBackImg("file:/" + skinPath + value);
+                //setInputBackImg("file:/" + skinPath + "skin1_2.png");
             }
        } else if (statusbar) {
             if (key == "pic") {
-                //setTipsImg("file:/" + skinPath + value);
+                setTipsImg("file:/" + skinPath + value);
+                //setTipsImg("file:/" + skinPath + "skin1_2.png");
             }
        }
         
 
-        setFontSize(13);
+        //setFontSize(13);
         setCandFontSize(13);
-        setInputColor(value2color("17 80 131"));
+        //setInputColor(value2color("17 80 131"));
         setIndexColor(value2color("3 0 0"));
-        setFirstCandColor(value2color("17 80 131"));
-        setOtherColor(value2color("3 0 0"));
+        //setFirstCandColor(value2color("17 80 131"));
+        //setOtherColor(value2color("3 0 0"));
 
-        setInputBackImg("file://usr/share/fcitx/skin/ubuntukylin-light1/input.png");
-        setTipsImg("file://usr/share/fcitx/skin/ubuntukylin-light1/tips.png");
-        setBackArrowImg("file://usr/share/fcitx/skin/ubuntukylin-light1/prev.png");
-        setForwardArrowImg("file://usr/share/fcitx/skin/ubuntukylin-light1/next.png");
+        //setInputBackImg("file://usr/share/fcitx/skin/ubuntukylin-light1/input.png");
+        //setTipsImg("file://usr/share/fcitx/skin/ubuntukylin-light1/tips.png");
+//        setBackArrowImg("file://usr/share/fcitx/skin/ubuntukylin-light2/prev.png");
+//        setForwardArrowImg("file://usr/share/fcitx/skin/ubuntukylin-light1/next.png");
 
         setAdjustWidth(10);
-        setAdjustHeight(-30);
+        setAdjustHeight(30);
         setMarginLeft(8);
         setMarginTop(8);
         setMarginRight(8);

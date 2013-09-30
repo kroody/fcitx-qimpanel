@@ -103,10 +103,12 @@ void SkinMenu::triggerUpdateSkinListMenu()
         for (iter = list.begin(); iter != list.end(); ++ iter) {
             if (iter->isDir() && "." != iter->fileName() && ".." != iter->fileName()) {
                 QFile fcitxSkinConfFile(iter->absoluteFilePath() + "/fcitx_skin.conf");
-                if (!fcitxSkinConfFile.exists())
-                    continue;
+                if (!fcitxSkinConfFile.exists()){
+                    QFile sogouSkinConfFile(iter->absoluteFilePath() + "/skin.ini");
+                    if (!sogouSkinConfFile.exists())
+                        continue;
+                }
                 menu = new MyAction(iter->fileName(), this);
-                //qDebug() << iter->absoluteFilePath();
                 menu->setSkinPath(iter->absoluteFilePath() + "/");
                 this->addAction(menu);
                 if (firstMenu == NULL)
