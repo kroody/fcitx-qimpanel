@@ -29,8 +29,8 @@ QColor SkinSogou::uint2color(const unsigned int value)
 bool SkinSogou::loadSkin(const QString skinPath)
 {
     init();
-//QString tmpPath = "/usr/share/fcitx/skin/sogou-kid/";
-QString tmpPath = "/usr/share/fcitx/skin/fish/";
+QString tmpPath = "/usr/share/fcitx/skin/sogou-kid/";
+//QString tmpPath = "/usr/share/fcitx/skin/fish/";
     //QFile sogouSkinConfFile(skinPath + "skin.ini");
     QFile sogouSkinConfFile(tmpPath + "skin.ini");
 qDebug() << "skinPath  " << skinPath;
@@ -101,12 +101,15 @@ qDebug() << "skinPath  " << skinPath;
             }
        }else if (scheme_h1) {
             if (key == "pic") {
-                setInputBackImg("file:/" + skinPath + value);
+                //setInputBackImg("file:/" + skinPath + value);
+                setInputBackImg("file:/" + tmpPath + value);
                 //setInputBackImg("file:/" + skinPath + "skin1_2.png");
             }
        } else if (statusbar) {
             if (key == "pic") {
-                setTipsImg("file:/" + skinPath + value);
+                //setTipsImg("file:/" + skinPath + value);
+                setTipsImg("file:/" + tmpPath + value);
+
                 //setTipsImg("file:/" + skinPath + "skin1_2.png");
             }
        }
