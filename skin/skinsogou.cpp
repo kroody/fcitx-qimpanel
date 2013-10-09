@@ -10,6 +10,7 @@
 #include <QTextStream>
 
 #include "skinsogou.h"
+#include "../main_model.h"
 
 SkinSogou::SkinSogou() : SkinBase()
 {
@@ -29,10 +30,12 @@ QColor SkinSogou::uint2color(const unsigned int value)
 bool SkinSogou::loadSkin(const QString skinPath)
 {
     init();
-QString tmpPath = "/usr/share/fcitx/skin/sogou-kid/";
+//QString tmpPath = "/usr/share/fcitx/skin/sogou-kid/";
+//QString tmpPath = "/usr/share/fcitx/skin/ali/";
+//QString tmpPath = "/usr/share/fcitx/skin/sunflower/";
 //QString tmpPath = "/usr/share/fcitx/skin/fish/";
-    //QFile sogouSkinConfFile(skinPath + "skin.ini");
-    QFile sogouSkinConfFile(tmpPath + "skin.ini");
+    QFile sogouSkinConfFile(skinPath + "skin.ini");
+    //QFile sogouSkinConfFile(tmpPath + "skin.ini");
 qDebug() << "skinPath  " << skinPath;
 
     if (!sogouSkinConfFile.exists())
@@ -51,9 +54,30 @@ qDebug() << "skinPath  " << skinPath;
     bool scheme_h1 = false;
     bool scheme_v1 = false;
     bool statusbar = false;
-    QColor pinyin_color, zhongwen_color, zhongwen_first_color;
+    int h_pt, h_pb, h_pl, h_pr;
+    int v_pt, v_pb, v_pl, v_pr;
+    QColor pinyin_color, zhongwen_color, zhongwen_first_color, comphint_color;
 
     int fontPixelSize = 12;
+    //        setCandFontSize(13);
+    //        setIndexColor(value2color("3 0 0"));
+
+    setTipsImg("file://usr/share/fcitx/skin/ubuntukylin-light1/tips.png");
+    setBackArrowImg("file://usr/share/fcitx/skin/ubuntukylin-light2/prev.png");
+    setForwardArrowImg("file://usr/share/fcitx/skin/ubuntukylin-light1/next.png");
+
+    setAdjustWidth(10);
+    setAdjustHeight(30);
+    setHorizontalTileMode("Stretch");
+    setVerticalTileMode("Stretch");
+    setInputStringPosX(0);
+    setInputStringPosY(0);
+    setOutputCandPosX(0);
+    setOutputCandPosY(0);
+    //        setBackArrowPosX(10);
+    //        setBackArrowPosY(6);
+    //        setForwardArrowPosX(30);
+    //        setForwardArrowPosY(6);
 
     QTextStream textStream(sogouSkinConfFile.readAll());
  
@@ -97,54 +121,57 @@ qDebug() << "skinPath  " << skinPath;
             }
             else if (key == "zhongwen_first_color"){
                 zhongwen_first_color = uint2color(value.toUInt());
-                setFirstCandColor(zhongwen_first_color);
+                //setFirstCandColor(zhongwen_first_color);
             }
-       }else if (scheme_h1) {
-            if (key == "pic") {
-                //setInputBackImg("file:/" + skinPath + value);
-                setInputBackImg("file:/" + tmpPath + value);
-                //setInputBackImg("file:/" + skinPath + "skin1_2.png");
+            else if (key == "comphint_color"){
+                comphint_color = uint2color(value.toUInt());
+                setFirstCandColor(comphint_color);
             }
-       } else if (statusbar) {
+        }else if (scheme_h1) {
+            if (key == "pic" && MainModel::self()->isHorizontal()) {
+                setInputBackImg("file:/" + skinPath + value);
+                //setInputBackImg("file:/" + tmpPath + value);
+            }
+            else if (key == "pinyin_marge") {
+                QStringList list = value.split(',');
+                h_pt = list.at(0).trimmed().toInt();
+                h_pb = list.at(1).trimmed().toInt();
+                h_pl = list.at(2).trimmed().toInt();
+                h_pr = list.at(3).trimmed().toInt();
+
+                if (MainModel::self()->isHorizontal()){
+                    setMarginTop(h_pt);
+                    setMarginBottom(h_pb);
+                    setMarginLeft(h_pl);
+                    setMarginRight(h_pr);
+                }
+            }
+        }else if (scheme_v1) {
+            if (key == "pic" && !MainModel::self()->isHorizontal()) {
+                setInputBackImg("file:/" + skinPath + value);
+                //setInputBackImg("file:/" + tmpPath + value);
+            }
+            else if (key == "pinyin_marge") {
+                QStringList list = value.split(',');
+                v_pt = list.at(0).trimmed().toInt();
+                v_pb = list.at(1).trimmed().toInt();
+                v_pl = list.at(2).trimmed().toInt();
+                v_pr = list.at(3).trimmed().toInt();
+
+                if (!MainModel::self()->isHorizontal()){
+                    setMarginTop(v_pt);
+                    setMarginBottom(v_pb);
+                    setMarginLeft(v_pl);
+                    setMarginRight(v_pr);
+                }
+            }
+        } else if (statusbar) {
             if (key == "pic") {
                 //setTipsImg("file:/" + skinPath + value);
-                setTipsImg("file:/" + tmpPath + value);
-
-                //setTipsImg("file:/" + skinPath + "skin1_2.png");
+                //setTipsImg("file:/" + tmpPath + value);
             }
-       }
-        
+        }
 
-        //setFontSize(13);
-        setCandFontSize(13);
-        //setInputColor(value2color("17 80 131"));
-        setIndexColor(value2color("3 0 0"));
-        //setFirstCandColor(value2color("17 80 131"));
-        //setOtherColor(value2color("3 0 0"));
-
-        //setInputBackImg("file://usr/share/fcitx/skin/ubuntukylin-light1/input.png");
-        //setTipsImg("file://usr/share/fcitx/skin/ubuntukylin-light1/tips.png");
-//        setBackArrowImg("file://usr/share/fcitx/skin/ubuntukylin-light2/prev.png");
-//        setForwardArrowImg("file://usr/share/fcitx/skin/ubuntukylin-light1/next.png");
-
-        setAdjustWidth(10);
-        setAdjustHeight(30);
-        setMarginLeft(8);
-        setMarginTop(8);
-        setMarginRight(8);
-        setMarginBottom(8);
-        setHorizontalTileMode("Stretch");
-        setVerticalTileMode("Stretch");
-        setInputStringPosX(0);
-        setInputStringPosY(10);
-        setOutputCandPosX(0);
-        setOutputCandPosY(34);
-        setBackArrowPosX(10);
-        setBackArrowPosY(6);
-        setForwardArrowPosX(30);
-        setForwardArrowPosY(6);
-
- 
 
     } while (!line.isNull());
 
