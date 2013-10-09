@@ -61,6 +61,7 @@ void SkinMenu::triggerUpdateSkinListMenu()
     QFileInfoList::Iterator iter;
     QString skinType = MainController::self()->getSkinType();
 
+    mSkinTypeMap.clear();
     this->clear();
 
     char* ukSkinPath = getQimpanelSharePath("uk-default-skin");
@@ -103,11 +104,14 @@ void SkinMenu::triggerUpdateSkinListMenu()
         for (iter = list.begin(); iter != list.end(); ++ iter) {
             if (iter->isDir() && "." != iter->fileName() && ".." != iter->fileName()) {
                 QFile fcitxSkinConfFile(iter->absoluteFilePath() + "/fcitx_skin.conf");
-                if (!fcitxSkinConfFile.exists()){
-                    QFile sogouSkinConfFile(iter->absoluteFilePath() + "/skin.ini");
-                    if (!sogouSkinConfFile.exists())
-                        continue;
-                }
+                QFile sogouSkinConfFile(iter->absoluteFilePath() + "/skin.ini");
+
+                if (fcitxSkinConfFile.exists()){
+                    mSkinTypeMap.insert(iter->fileName(), FCITX);
+                }else if (sogouSkinConfFile.exists()){
+                    mSkinTypeMap.insert(iter->fileName(), SOGOU);
+                }else continue;
+
                 menu = new MyAction(iter->fileName(), this);
                 menu->setSkinPath(iter->absoluteFilePath() + "/");
                 this->addAction(menu);
@@ -137,9 +141,14 @@ void SkinMenu::menuItemOnClick(QAction *action)
     MyAction *myAction = (MyAction *)action;
     MainController::self()->setSkinType(myAction->text());
 
-//fjkong
-//    skin = new SkinFcitx;
-    skin = new SkinSogou;
+    QMap<QString,int>::iterator it;
+    it = mSkinTypeMap.find(myAction->text());
+    if (FCITX == it.value())
+        skin = new SkinFcitx;
+    else if (SOGOU == it.value())
+        skin = new SkinSogou;
+    else qDebug() << "Load skin failed!";
+
     skin->loadSkin(myAction->getSkinPath());
     MainController::self()->setSkinBase(skin);
 }
